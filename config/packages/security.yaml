@@ -10,6 +10,8 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
+            form_login:
+                login_path: app_security_login
             lazy: true
             provider: users_in_memory
 

@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "lib": ["dom", "es2018"],
+    "types": ["webpack-env", "vuetify"]
+  },
+  "include": [
+    "./assets/"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
