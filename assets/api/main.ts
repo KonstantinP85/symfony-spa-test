@@ -21,8 +21,8 @@ instance.interceptors.response.use((response) => {
     return console.log(error);
 });
 
-const axiosParams = (params) => {
-    const queries = {};
+const axiosParams: any = (params: any) => {
+    const queries: Record<string, string>  = {};
 
     for (const i in params) {
         if (params[i]) {
@@ -34,7 +34,7 @@ const axiosParams = (params) => {
 };
 
 const requests = {
-    get(url, queryParams = null) {
+    get(url: string, queryParams: any = null) {
         if (!queryParams) {
             return instance.get(url);
         } else {
@@ -42,7 +42,7 @@ const requests = {
         }
     },
 
-    post(url, data) {
+    post(url: string, data: object) {
         const config = {
             headers: {
                 'Content-Type': 'application/json',

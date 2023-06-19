@@ -2,10 +2,10 @@
 
     <v-app>
         <v-main>
-            <v-container fluid style="margin-top: 10%">
+            <v-container style="margin-top: 10%">
                 <v-container fill-height style="max-width: 900px">
                     <v-layout row wrap>
-                        <v-flex xs12 sm6 offset-sm3 text-center>
+                        <v-card xs12 sm6 offset-sm3 text-center>
                             <v-card class="rounded-card pa-5">
                                 <h1>Авторизация</h1>
 
@@ -37,7 +37,7 @@
                                 </v-form>
 
                             </v-card>
-                        </v-flex>
+                        </v-card>
                     </v-layout>
                 </v-container>
             </v-container>
@@ -49,7 +49,9 @@
 
 <script lang="ts">
 import {requests, apiConstants} from '../api/main';
-export default {
+import { defineComponent } from 'vue'
+
+export default defineComponent ({
     data() {
         return {
             warning: '',
@@ -59,27 +61,21 @@ export default {
                 password: '',
             },
             nameRules: [
-                v => !!v || 'Обязательное поле',
+                //v => !!v || 'Обязательное поле',
             ],
         };
     },
     methods: {
-        isFormInvalid() {
-            return this.$refs.form.validate()
-                .then((success) => {
-                    return success;
-                });
-        },
-        hideAlert() {
+        hideAlert(): void {
             this.alert = false
         },
-        async login() {
+        async login(): Promise<void> {
             try {
                 const login_response = await requests.post(apiConstants.FORM.LOGIN, {
                     login: this.model.login,
                     password: this.model.password
                 })
-            } catch (error) {
+            } catch (error: any) {
                 if (error.response.status === 401) {
                     this.alert = true;
                     this.warning = error.response.data.error;
@@ -93,5 +89,5 @@ export default {
             })
         },
     },
-};
+});
 </script>

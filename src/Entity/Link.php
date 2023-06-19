@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Entity;
+
+use App\Repository\LinkRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 
@@ -22,18 +24,15 @@ class Link
     #[ORM\Column(type: 'integer')]
     private int $status;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private string|null $moderationComment;
-
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[JoinColumn(name: 'user_id', referencedColumnName: 'id')]
     private User $user;
 
-    public function __construct(User $user, string $title, string $content, int $status)
+    public function __construct(User $user, string $name, string $url, int $status)
     {
         $this->user = $user;
-        $this->title = $title;
-        $this->content = $content;
+        $this->name = $name;
+        $this->url = $url;
         $this->status = $status;
     }
 
@@ -42,24 +41,24 @@ class Link
         return $this->id;
     }
 
-    public function getTitle(): string
+    public function getName(): string
     {
-        return $this->title;
+        return $this->name;
     }
 
-    public function setTitle(string $title): void
+    public function setName(string $name): void
     {
-        $this->title = $title;
+        $this->name = $name;
     }
 
-    public function getContent(): string
+    public function getUrl(): string
     {
-        return $this->content;
+        return $this->url;
     }
 
-    public function setContent(string $content): void
+    public function setUrl(string $url): void
     {
-        $this->content = $content;
+        $this->url = $url;
     }
 
     public function getStatus(): int
@@ -70,16 +69,6 @@ class Link
     public function setStatus(int $status): void
     {
         $this->status = $status;
-    }
-
-    public function getModerationComment(): string|null
-    {
-        return $this->moderationComment;
-    }
-
-    public function setModerationComment(string|null $moderationComment): void
-    {
-        $this->moderationComment = $moderationComment;
     }
 
     public function getUser(): User

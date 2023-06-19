@@ -1,5 +1,5 @@
 const Encore = require('@symfony/webpack-encore');
-const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
+//const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
@@ -57,7 +57,7 @@ Encore
 
     .enableVueLoader()
 
-    .addPlugin(new VuetifyLoaderPlugin())
+    //.addPlugin(new VuetifyLoaderPlugin())
     // enables Sass/SCSS support
     .enableSassLoader()
 
@@ -78,6 +78,12 @@ Encore
 
     // uncomment if you're having problems with a jQuery plugin
     //.autoProvidejQuery()
+    .configureMiniCssExtractPlugin(
+        loaderOptions => {},
+        pluginOptions => {
+            pluginOptions.ignoreOrder = true;
+        }
+    )
 ;
 
 module.exports = Encore.getWebpackConfig();

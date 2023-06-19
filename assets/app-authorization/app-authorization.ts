@@ -1,8 +1,5 @@
-import Vue from 'vue';
+import { createApp } from 'vue';
 import App from './App.vue';
-import vuetify from '../plugins/vuetify'
+import  vuetify  from '../plugins/vuetify';
 
-new Vue({
-    vuetify,
-    render: (h) => h(App),
-}).$mount('#app-authorization');
+createApp(App).use(vuetify).mount("#app-authorization");

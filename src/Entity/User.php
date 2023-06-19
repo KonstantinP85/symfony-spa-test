@@ -81,17 +81,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $password;
     }
 
-    /**
-     * @return int
-     */
     public function getClickCount(): int
     {
         return $this->clickCount;
     }
 
-    /**
-     * @param int $clickCount
-     */
     public function setClickCount(int $clickCount): void
     {
         $this->clickCount = $clickCount;
