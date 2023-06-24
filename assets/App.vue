@@ -1,13 +1,15 @@
 <template>
-    <v-app>
-        <Topbar/>
-        <Sidebar/>
-        <v-main>
-            <v-container fluid>
-                <router-view></router-view>
-            </v-container>
-        </v-main>
-    </v-app>
+  <v-app>
+    <v-layout class="rounded rounded-md">
+      <Sidebar/>
+      <Topbar/>
+      <v-main class="d-flex align-center justify-center" style="min-height: 300px;">
+        <v-container>
+          <router-view></router-view>
+        </v-container>
+      </v-main>
+    </v-layout>
+  </v-app>
 </template>
 
 <script lang="ts">

@@ -1,7 +1,7 @@
 <template>
     <v-card>
         <v-card-text>
-            Привет, админ
+            Привет
         </v-card-text>
     </v-card>
 </template>

@@ -8,6 +8,11 @@ export default {
         LOGOUT: '/security/logout',
     },
     LINK: {
-        DEFAULT: '/link/list',
+        DEFAULT: '/api/v1/link/list',
+        CREATE:  '/api/v1/link/create',
+        OPERATION: (id: number): string => `/api/v1/link/${id}`,
+    },
+    USER: {
+        DEFAULT: '/api/v1/user/list',
     }
 };

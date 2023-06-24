@@ -27,9 +27,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private string $password;
 
-    #[ORM\Column(type: 'integer')]
-    private int $clickCount;
-
     #[OneToMany(mappedBy: 'link', targetEntity: Link::class)]
     private Collection $links;
 
@@ -56,9 +53,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->roles = $roles;
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): string
     {
-        // TODO: Implement eraseCredentials() method.
+        return $this->login;
     }
 
     public function getLogin(): string
@@ -79,16 +76,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): void
     {
         $this->password = $password;
-    }
-
-    public function getClickCount(): int
-    {
-        return $this->clickCount;
-    }
-
-    public function setClickCount(int $clickCount): void
-    {
-        $this->clickCount = $clickCount;
     }
 
     public function getLinks(): Collection

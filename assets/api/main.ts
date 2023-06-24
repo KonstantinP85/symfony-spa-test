@@ -49,13 +49,21 @@ const requests = {
             },
         };
 
-        if (data instanceof FormData) {
-            config.headers = {
-                'Content-Type': 'multipart/form-data',
-            };
-        }
-
         return instance.post(url, data, config);
+    },
+
+    put(url: string, data: object) {
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+
+        return instance.put(url, data, config);
+    },
+
+    delete(url: string) {
+        return instance.delete(url);
     },
 };
 

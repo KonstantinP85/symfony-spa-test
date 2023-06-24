@@ -24,6 +24,9 @@ class Link
     #[ORM\Column(type: 'integer')]
     private int $status;
 
+    #[ORM\Column(type: 'integer')]
+    private int $clickCount;
+
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[JoinColumn(name: 'user_id', referencedColumnName: 'id')]
     private User $user;
@@ -34,6 +37,7 @@ class Link
         $this->name = $name;
         $this->url = $url;
         $this->status = $status;
+        $this->clickCount = 0;
     }
 
     public function getId(): int
@@ -69,6 +73,16 @@ class Link
     public function setStatus(int $status): void
     {
         $this->status = $status;
+    }
+
+    public function getClickCount(): int
+    {
+        return $this->clickCount;
+    }
+
+    public function setClickCount(int $clickCount): void
+    {
+        $this->clickCount = $clickCount;
     }
 
     public function getUser(): User
