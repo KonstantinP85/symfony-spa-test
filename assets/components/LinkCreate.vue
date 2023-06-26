@@ -12,6 +12,7 @@
           <v-text-field
               label="Название"
               :counter="255"
+              @focus="alert=false"
               :rules="commonRules"
               v-model="linkName"
               required
@@ -20,11 +21,22 @@
           <v-text-field
               label="Ссылка"
               :counter="255"
+              @focus="alert=false"
               :rules="commonRules.concat(linkRules)"
               v-model="link"
               required
           ></v-text-field>
         </v-form>
+        <v-alert
+            type="warning"
+            v-model="alert"
+            closable
+        >
+          <span>{{ warning }}</span>
+          <li v-for="(value, name) in errorObject">
+            {{ name }}: {{ value }}
+          </li>
+        </v-alert>
         <v-card-actions>
           <v-btn color="grey" :to="pathMainPage">На главную</v-btn>
           <v-btn color="green" @click="createLink">Сохранить</v-btn>
@@ -41,7 +53,7 @@
           </v-card-text>
           <v-card-actions>
             <v-btn color="grey" :to="pathMainPage">На главную</v-btn>
-            <v-btn color="green" @click="dialog=false">Создать еще ссылку</v-btn>
+            <v-btn color="green" @click="newLink">Создать еще ссылку</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -59,6 +71,7 @@ export default defineComponent ({
         pathMainPage: '/',
         linkName: '',
         link: '',
+        alert: false,
         commonRules: [
             (value: any) => {
                 if (value) return true
@@ -76,18 +89,30 @@ export default defineComponent ({
             },
         ],
         dialog: false,
+        warning: 'Ошибка создания',
+        errorObject: {}
     }),
     methods: {
         async createLink() {
             try {
                 const result = await requests.post(apiConstants.LINK.CREATE, { name: this.linkName, url: this.link })
-                this.linkName = ''
-                this.link = ''
-                this.dialog = true
+                if (result.status && result.status == 204) {
+                    this.dialog = true
+                } else {
+                  if (result.data.status == "error") {
+                    this.errorObject = JSON.parse(result.data.result)
+                  }
+                  this.alert = true
+                }
             } catch (err) {
                 console.log(err);
             }
         },
+        newLink() {
+            this.linkName = ''
+            this.link = ''
+            this.dialog = false
+        }
     }
 });
 </script>

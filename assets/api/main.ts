@@ -18,7 +18,7 @@ instance.interceptors.response.use((response) => {
 
     return response;
 }, (error) => {
-    return console.log(error);
+    console.log(error);
 });
 
 const axiosParams: any = (params: any) => {
@@ -64,6 +64,12 @@ const requests = {
 
     delete(url: string) {
         return instance.delete(url);
+    },
+
+    patch(url: string, data: object) {
+        const config = {};
+
+        return instance.patch(url, data, config);
     },
 };
 

@@ -8,7 +8,7 @@
             </v-list-item>
         </v-list-item>
         <v-divider></v-divider>
-        <v-list dense >
+        <v-list v-if="isAdmin" dense >
             <v-list-item v-for="item in items" :key="item.title" :to="item.link">
 
                 <template v-slot:prepend>
@@ -18,17 +18,16 @@
                 <v-list-item-title v-text="item.title" :to="item.link"></v-list-item-title>
             </v-list-item>
         </v-list>
-      <v-divider></v-divider>
-      <v-list-item>
-        <v-card-text class="text-right"><v-icon>mdi-account</v-icon> Администратор</v-card-text>
-      </v-list-item>
+
     </v-navigation-drawer>
 
 </template>
 
 <script lang="ts">
+
 export default {
     name: 'Sidebar',
+    props: ['isAdmin'],
     data: () => ({
         basePath: '/',
         items: [

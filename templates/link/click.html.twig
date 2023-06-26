@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Клик по ссылке{% endblock %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('app-authorization') }}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid pr-0 pl-0">
+        <div class="row no-gutters">
+            <div class="col-12">
+                {% if link_id is null %}
+                    <h4>Ссылка не действительна</h4>
+                {% else %}
+                    <h4>Переход засчитан. id ссылки {{ link_id }}</h4>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+{% endblock %}

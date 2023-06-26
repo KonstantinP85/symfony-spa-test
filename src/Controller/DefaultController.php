@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController extends AbstractController
 {
-    #[Route(path: '/{vueRouting}', name: 'app_default_main', requirements: ['vueRouting' => '^(?!(api|login)|_(profiler|wdt)).*'], defaults: ['vueRouting' => ''], methods: ['GET'])]
+    #[Route(path: '/{vueRouting}', name: 'app_default_main', requirements: ['vueRouting' => '^(?!(api|click|login)|_(profiler|wdt)).*'], defaults: ['vueRouting' => ''], methods: ['GET'])]
     public function index(Request $request, string $vueRouting): Response
     {
         return $this->render('main.html.twig');

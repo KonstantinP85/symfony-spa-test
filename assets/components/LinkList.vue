@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+
     <v-card>
         <v-card-title>
             Список ссылок
@@ -33,7 +33,7 @@
             </v-col>
             <v-col cols="12" sm="6" md="2">
               <v-btn
-                  class="mt-3"
+                  class="mt-5"
                   size="x-small"
                   @click="reset"
               >
@@ -104,7 +104,7 @@
                             class="ml-2"
                             size="x-small"
                             v-bind="props"
-                            @click="showModerationDialog(item.columns.id)"
+                            @click="showModerationDialog(item.columns.id, item.columns.status)"
                         >
                           <v-icon
                               small
@@ -134,6 +134,7 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+
           <v-dialog
               v-model="moderationForm"
               width="auto"
@@ -143,17 +144,16 @@
                 Модерация
               </v-card-text>
               <v-card-actions>
-                <v-btn color="grey" @click="editForm = false">Закрыть</v-btn>
-                <v-btn color="grey" @click="moderate(1)">В черновик</v-btn>
-                <v-btn color="grey" @click="moderate(2)">Опубликовать</v-btn>
-                <v-btn color="pink" @click="moderate(3)">В Модерацию</v-btn>
+                <v-btn color="grey" @click="moderationForm = false">Закрыть</v-btn>
+                <v-btn v-if="currentStatus === 'moderation'" color="red" @click="moderate('draft')">В черновик</v-btn>
+                <v-btn v-if="currentStatus !== 'moderation'" color="pink" @click="moderate('moderation')">В Модерацию</v-btn>
+                <v-btn v-if="currentStatus === 'moderation'" color="green" @click="moderate('published')">Опубликовать</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
 
           <v-dialog
               v-model="editForm"
-              width="auto"
               class="edit-dialog"
           >
             <v-card>
@@ -168,6 +168,7 @@
                   <v-text-field
                       label="Название"
                       :counter="255"
+                      @focus="alert=false"
                       v-model="linkName"
                       :rules="commonRules"
                       required
@@ -176,20 +177,31 @@
                   <v-text-field
                       label="Ссылка"
                       :counter="255"
+                      @focus="alert=false"
                       v-model="link"
                       :rules="commonRules.concat(linkRules)"
                       required
                   ></v-text-field>
                 </v-form>
+                <v-alert
+                    type="warning"
+                    v-model="alert"
+                    closable
+                >
+                  <span>{{ warning }}</span>
+                  <li v-for="(value, name) in errorObject">
+                    {{ name }}: {{ value }}
+                  </li>
+                </v-alert>
               </v-card>
               <v-card-actions>
-                <v-btn color="grey" @click="editForm = false">Закрыть</v-btn>
+                <v-btn color="grey" @click="closeEditForm">Закрыть</v-btn>
                 <v-btn color="green" @click="editLink">Сохранить</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
     </v-card>
-  </v-container>
+
 </template>
 
 <script lang="ts">
@@ -205,8 +217,6 @@ export default defineComponent ({
         pageCount: 1,
         options: {},
         name_search: '',
-        sort: 'name',
-        order: 'asc',
         sortBy: [{ key: 'name', order: 'asc' }],
         loading: false,
         itemsPerPage: 10,
@@ -244,38 +254,39 @@ export default defineComponent ({
             return 'Ссылка не валидна'
             },
         ],
-        moderationForm: false
+        moderationForm: false,
+        idForModeration: 0,
+        currentStatus: 'moderation',
+        warning: 'Ошибка создания',
+        errorObject: {},
+        alert: false,
     }),
     methods: {
         async linkList() {
             this.loading = true
-            try {
-                const result = await requests.get(apiConstants.LINK.DEFAULT, { page: this.page, countPerPage: this.itemsPerPage, order: this.sortBy[0].order, sort: this.sortBy[0].key, name: this.searchName, url: this.searchLink, clickCount: this.searchClickCount})
-                this.links = result.data.items
-                this.totalItems = result.data.total
-                this.pageCount = result.data.total/result.data.limit
-                this.loading = false
-            } catch (err) {
-                console.log(err);
-            }
+
+            const result = await requests.get(apiConstants.LINK.DEFAULT, { page: this.page, countPerPage: this.itemsPerPage, order: this.sortBy[0].order, sort: this.sortBy[0].key, name: this.searchName, url: this.searchLink, clickCount: this.searchClickCount})
+            this.links = result.data.items
+            this.totalItems = result.data.total
+            this.pageCount = result.data.total/result.data.limit
+            this.loading = false
+
         },
-        async editLink(item: object) {
-            try {
-                await requests.put(apiConstants.LINK.OPERATION(this.idForEdit), { name: this.linkName, url: this.link})
+        async editLink() {
+            const result = await requests.put(apiConstants.LINK.OPERATION(this.idForEdit), { name: this.linkName, url: this.link})
+            if (result.data.status == "error") {
+                this.errorObject = JSON.parse(result.data.result)
+                this.alert = true
+            } else {
                 this.editForm = false
                 await this.linkList()
-            } catch (err) {
-                console.log(err);
             }
         },
         async getLink(id: number) {
-            try {
-                const result = await requests.get(apiConstants.LINK.OPERATION(id))
-                this.linkName = result.data.name
-                this.link = result.data.url
-            } catch (err) {
-                console.log(err);
-            }
+
+            const result = await requests.get(apiConstants.LINK.OPERATION(id))
+            this.linkName = result.data.name
+            this.link = result.data.url
         },
 
         confirm(data: object) {
@@ -283,6 +294,8 @@ export default defineComponent ({
             }
         },
         closeEditForm() {
+            this.editForm = false
+            this.alert = false
         },
         openEditForm(id: number) {
             this.linkName = ''
@@ -299,9 +312,13 @@ export default defineComponent ({
             this.idForDelete = id
         },
         async deleteLink() {
-            await fetch(apiConstants.LINK.OPERATION(this.idForDelete), { method: 'DELETE' })
-            this.dialog = false
-            await this.linkList()
+            try {
+                await fetch(apiConstants.LINK.OPERATION(this.idForDelete), {method: 'DELETE'})
+                this.dialog = false
+                await this.linkList()
+            } catch (error) {
+                console.log(error)
+            }
         },
 
         reset() {
@@ -311,12 +328,21 @@ export default defineComponent ({
             this.linkList()
         },
 
-        showModerationDialog(id: number) {
+        showModerationDialog(id: number, status: string) {
             this.moderationForm = true
+            this.idForModeration = id
+            this.currentStatus = status
         },
 
-        moderate(status: number) {
-
+        async moderate(status: string) {
+            const result = await requests.patch(apiConstants.LINK.MODERATION(this.idForModeration, status), {})
+            if (result.data.status == "error") {
+                this.errorObject = JSON.parse(result.data.result)
+                this.alert = true
+            } else {
+                this.moderationForm = false
+                await this.linkList()
+            }
         }
     },
     mounted() {

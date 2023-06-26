@@ -10,7 +10,7 @@ class LinkResponseDto
 
     public string $url;
 
-    public int $status;
+    public string $status;
 
     public int $clickCount;
 

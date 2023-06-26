@@ -2,11 +2,11 @@
 
 namespace App\Service;
 
-enum LinkStatus: int
+enum LinkStatus: string
 {
-    case DRAFT = 1;
+    case DRAFT = 'draft';
 
-    case MODERATION = 2;
+    case MODERATION = 'moderation';
 
-    case PUBLISHED = 3;
+    case PUBLISHED = 'published';
 }

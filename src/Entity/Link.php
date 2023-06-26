@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\LinkRepository;
+use App\Service\LinkStatus;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 
@@ -21,8 +22,8 @@ class Link
     #[ORM\Column(type: 'string', length: 255)]
     private string $url;
 
-    #[ORM\Column(type: 'integer')]
-    private int $status;
+    #[ORM\Column(type: 'string', length: 128)]
+    private string $status;
 
     #[ORM\Column(type: 'integer')]
     private int $clickCount;
@@ -31,12 +32,12 @@ class Link
     #[JoinColumn(name: 'user_id', referencedColumnName: 'id')]
     private User $user;
 
-    public function __construct(User $user, string $name, string $url, int $status)
+    public function __construct(User $user, string $name, string $url)
     {
         $this->user = $user;
         $this->name = $name;
         $this->url = $url;
-        $this->status = $status;
+        $this->status = LinkStatus::DRAFT->value;
         $this->clickCount = 0;
     }
 
@@ -65,12 +66,12 @@ class Link
         $this->url = $url;
     }
 
-    public function getStatus(): int
+    public function getStatus(): string
     {
         return $this->status;
     }
 
-    public function setStatus(int $status): void
+    public function setStatus(string $status): void
     {
         $this->status = $status;
     }
@@ -98,5 +99,10 @@ class Link
 
         $this->user = $user;
         $user->addLink($this);
+    }
+
+    public function addClick(): void
+    {
+        $this->clickCount = $this->clickCount + 1;
     }
 }

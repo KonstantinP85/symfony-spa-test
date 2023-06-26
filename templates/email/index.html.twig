@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    {% block stylesheets %}
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+
+        <style>
+            span {
+                font-size: 9pt;
+            }
+            .contact-title {
+                color: #7bc2e0
+            }
+            .contact {
+                margin-left: 2px;
+                letter-spacing: 1px;
+            }
+            .main-image {
+                position: relative;
+                margin-top: 30px
+            }
+            .internal-image {
+                max-width: 70%;
+                position:absolute;
+                top:11%;
+                left:15%
+            }
+            .lower-text {
+                margin-top: 40px;
+            }
+            .social-networks {
+                display: block;
+                width:50px
+            }
+            .contact-block {
+                display: block;
+                margin-left: 35px
+            }
+            .information {
+                display: flex;
+                margin-left: 65px;
+                margin-top: 15px
+            }
+            .monogram {
+                display: block;
+                width:70px
+            }
+            .company-logo {
+                display: block;
+                width:210px;
+            }
+            .networks-container {
+                display: flex;
+            }
+
+            @media screen and (max-width: 520px) {
+                .information {
+                    margin-left: 15px;
+                    display: block;
+                }
+                .contact-block {
+                    margin-left: 0px;
+                    margin-top: 10px;
+                }
+            }
+
+        </style>
+    {% endblock %}
+
+    {% block javascripts %}
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    {% endblock %}
+</head>
+<body>
+{% block body %}
+    <body class="bg-light">
+    <div class="container">
+        <div class="card my-8">
+            <div class="card-body">
+                <h1 class="h3 mb-2">Bootstrap Email</h1>
+                <h5 class="text-teal-700">Here is a very simple email using Bootstrap Email</h5>
+                <div class="space-y-3">
+                    <p class="text-gray-700">Click the "Render" button at the top of the page every time you want to rebuild the email.</p>
+                    <p class="text-gray-700">
+                        We hope you enjoy using Boostrap Email. This is our Online Editor that allows you to edit emails
+                        and have them render directly in the browser. The outputted HTML will be in the "HTML" tab in the top
+                        and that is the HTML you want to use to send emails. All the styles and responsive CSS are self contained in the
+                        HTML that is generated making is very portable needing no external CSS files.
+                    </p>
+                    <p class="text-gray-700">
+                        You can use the "Test" button to email yourself the outputted code to test in your inbox and email client.
+                    </p>
+                </div>
+                <hr>
+
+                <div class="space-y-3">
+                    <div class="company-logo-block" style="display: flex;">
+                        <div class="monogram">
+                            <img class="img" style="width: 100%" src="{{ email.image('@images/email/Post_Banner_monogram.png') }}" alt="Logo">
+                        </div>
+                        <div class="company-logo">
+                            <div style="margin-top: 23px;">
+                                <img style="width: 100%;" class="img" src="{{ email.image('@images/email/Post_Company_logo.png') }}" alt="Logo">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="information">
+                        <div class="networks-container">
+                            <div class="social-networks">
+                                <img style="width:65%;margin-top: -3px" class="img-fluid" src="{{ email.image('@images/email/Post_Social_Icon01.png') }}">
+                            </div>
+                            <div class="social-networks">
+                                <img style="width: 48%;margin-left: 4px" class="img-fluid" src="{{ email.image('@images/email/Post_Social_Icon02.png') }}">
+                            </div>
+                            <div class="social-networks">
+                                <img style="width: 48%;margin-left: 3px" class="img-fluid" src="{{ email.image('@images/email/Post_Social_Icon03.png') }}">
+                            </div>
+                        </div>
+                        <div class="contact-block">
+                            <div>
+                                <span class="contact-title">h:</span>
+                                <span class="contact"><b>+971 0 000 000 ext. 000</b></span>
+                            </div>
+                            <div>
+                                <span class="contact-title">m:</span>
+                                <span class="contact">+971 0 000 000</span>
+                            </div>
+                            <div>
+                                <span class="contact-title">m:</span>
+                                <span class="contact">+371 0 000 000</span>
+                            </div>
+                            <div>
+                                <span class="contact-title">a:</span>
+                                <span class="contact">Street name 000. 123456. Country</span>
+                            </div>
+                            <div>
+                                <span class="contact-title">e:</span>
+                                <span class="contact">name.surname@company.group</span>
+                            </div>
+                            <div>
+                                <span class="contact-title">w:</span>
+                                <span class="contact">www.company.group</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-3 main-image">
+                    <div>
+                        <img class="img-fluid" src="{{ email.image('@images/email/Post_Banner_back.png') }}" alt="Logo">
+                    </div>
+                    <div class="internal-image">
+                        <img class="img-fluid" src="{{ email.image('@images/email/Post_Banner_text.png') }}" alt="Logo">
+                    </div>
+                </div>
+                <div class="space-y-3 lower-text">
+                    <p class="text-gray-700">
+                        You can use the "Test" button to email yourself the outputted code to test in your inbox and email client.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </body>
+
+{% endblock %}
+</body>
+</html>

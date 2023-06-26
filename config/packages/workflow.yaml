@@ -1,0 +1,24 @@
+framework:
+  workflows:
+    link_status:
+      type: 'state_machine'
+      marking_store:
+        type: 'method'
+        property: 'status'
+      supports:
+        - App\Entity\Link
+      initial_marking: moderation
+      places:
+        - draft
+        - moderation
+        - published
+      transitions:
+        to_moderation:
+          from: [draft, published]
+          to: moderation
+        to_draft:
+          from: moderation
+          to: draft
+        moderated:
+          from: moderation
+          to: published

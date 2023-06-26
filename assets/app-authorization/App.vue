@@ -3,42 +3,53 @@
     <v-app>
         <v-main>
             <v-container style="margin-top: 10%">
-                <v-container fill-height style="max-width: 900px">
-                    <v-layout row wrap>
-                        <v-card xs12 sm6 offset-sm3 text-center>
-                            <v-card class="rounded-card pa-5">
-                                <h1>Авторизация</h1>
+                <v-container fill-height class="login-window">
 
-                                <v-form
-                                        ref="form"
-                                        lazy-validation
-                                        v-on:submit.prevent="login"
-                                >
-                                    <v-text-field
-                                            v-model="model.login"
-                                            label="Логин"
-                                            :rules="nameRules"
-                                            @focus="hideAlert"
-                                            required
-                                    ></v-text-field>
+                  <v-card text-center>
+                    <v-card class="rounded-card pa-5">
+                      <v-card-title>
+                        <h3>Авторизация</h3>
+                      </v-card-title>
 
-                                    <v-text-field
-                                            v-model="model.password"
-                                            type="password"
-                                            label="Пароль"
-                                            :rules="nameRules"
-                                            @focus="hideAlert"
-                                            required
-                                    ></v-text-field>
-                                    <v-alert type="warning" :value="alert">
-                                        <span>{{ warning }}</span>
-                                    </v-alert>
-                                    <v-btn type="submit" >ВОЙТИ</v-btn>
-                                </v-form>
+                      <v-form
+                          ref="form"
+                          lazy-validation
+                          v-on:submit.prevent="login"
+                      >
+                        <v-text-field
+                            v-model="model.login"
+                            label="Логин"
+                            :rules="rules"
+                            @focus="hideAlert"
+                            required
+                        ></v-text-field>
 
-                            </v-card>
-                        </v-card>
-                    </v-layout>
+                        <v-text-field
+                            v-model="model.password"
+                            type="password"
+                            label="Пароль"
+                            :rules="rules"
+                            @focus="hideAlert"
+                            required
+                        ></v-text-field>
+                        <v-alert
+                            type="warning"
+                            v-model="alert"
+                            closable
+                        >
+                          <span>{{ warning }}</span>
+                        </v-alert>
+                        <v-btn
+                            class="mt-5"
+                            type="submit"
+                        >
+                          ВОЙТИ
+                        </v-btn>
+                      </v-form>
+
+                    </v-card>
+                  </v-card>
+
                 </v-container>
             </v-container>
         </v-main>
@@ -60,8 +71,11 @@ export default defineComponent ({
                 login: '',
                 password: '',
             },
-            nameRules: [
-                //v => !!v || 'Обязательное поле',
+            rules: [
+                (value: any) => {
+                    if (value) return true
+                    return 'Поле должно быть заполнено'
+                },
             ],
         };
     },
@@ -69,24 +83,20 @@ export default defineComponent ({
         hideAlert(): void {
             this.alert = false
         },
-        async login(): Promise<void> {
-            try {
-                const login_response = await requests.post(apiConstants.FORM.LOGIN, {
-                    login: this.model.login,
-                    password: this.model.password
-                })
-            } catch (error: any) {
-                if (error.response.status === 401) {
-                    this.alert = true;
-                    this.warning = error.response.data.error;
-                }
-                return;
-            }
-
-            await requests.post(apiConstants.AUTH.LOGIN, {
+        login(): any {
+            requests.post(apiConstants.FORM.LOGIN, {
                 login: this.model.login,
                 password: this.model.password
+            }).then((response) => {
+                if (response.data.status && response.data.status == 'error') {
+                    this.alert = true
+                    this.warning = response.data.result
+                }
+            }).catch((error) => {
+                console.log(error)
             })
+
+            return
         },
     },
 });

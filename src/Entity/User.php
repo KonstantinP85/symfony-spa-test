@@ -27,7 +27,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private string $password;
 
-    #[OneToMany(mappedBy: 'link', targetEntity: Link::class)]
+    #[OneToMany(mappedBy: 'user', targetEntity: Link::class, cascade: ['persist'], orphanRemoval: true)]
     private Collection $links;
 
     public function getId(): int
@@ -43,7 +43,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        $roles[] = 'ROLE_GUEST';
 
         return array_unique($roles);
     }

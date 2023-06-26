@@ -7,7 +7,10 @@
       >
         Добавить ссылку
       </v-btn>
-      <v-card-text class="text-right"><v-icon>mdi-account</v-icon> Администратор</v-card-text>
+      <v-card-text class="text-right">
+        <v-icon>mdi-account</v-icon>
+        {{ userLogin }}
+      </v-card-text>
         <v-btn @click="logout" class="logout-btn" prepend-icon="mdi-exit-to-app"></v-btn>
     </v-app-bar>
 </template>
@@ -16,8 +19,8 @@
 import {requests, apiConstants} from '../api/main';
 export default {
     name: 'Topbar',
+    props: ['userLogin'],
     data: () => ({
-        link: apiConstants.AUTH.LOGOUT,
         createLinkPath: '/link/create'
     }),
     methods: {

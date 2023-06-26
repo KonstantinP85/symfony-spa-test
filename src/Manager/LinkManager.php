@@ -10,19 +10,26 @@ use App\Entity\Link;
 use App\Entity\User;
 use App\Repository\LinkRepository;
 use App\Service\DtoConverter;
+use App\Service\LinkStatus;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Workflow\WorkflowInterface;
+use Symfony\Config\Security\FirewallConfig\AccessToken\TokenHandlerConfig;
 
 class LinkManager
 {
+    private const ACTION_FOR_LINK = 'click';
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly DtoConverter $converter,
         private readonly LinkRepository $linkRepository,
-        private readonly Security $security
+        private readonly Security $security,
+        private readonly WorkflowInterface $linkStatusStateMachine,
+        private readonly string $linkHost
     ){
     }
 
@@ -42,7 +49,7 @@ class LinkManager
             $items,
             LinkResponseDto::class,
             true,
-            $this->getCallBack()
+            $this->getContext()
         );
 
         $total = $this->getQueryBuilder($linkListRequestDto)
@@ -62,7 +69,6 @@ class LinkManager
         $this->entityManager->flush();
     }
 
-
     public function get(int $id): object
     {
         $link = $this->getLinkFromRepo($id);
@@ -71,7 +77,7 @@ class LinkManager
             $link,
             LinkResponseDto::class,
             false,
-            $this->getCallBack()
+            $this->getContext()
         );
     }
 
@@ -80,15 +86,20 @@ class LinkManager
         $user = $this->security->getUser();
 
         if (!$user instanceof User) {
-            //throw new \Exception('Auth error', Response::HTTP_FORBIDDEN);
+            throw new \Exception('Auth error', Response::HTTP_FORBIDDEN);
         }
 
         $link = new Link(
-            $this->entityManager->getRepository(User::class)->find(4),  // убрать
+            $user,
             $createLinkRequestDto->name,
-            $createLinkRequestDto->url,
-            2
+            $createLinkRequestDto->url
         );
+
+        try {
+            $this->linkStatusStateMachine->apply($link, 'to_moderation');
+        } catch (\LogicException $e) {
+            throw new \Exception('Status state machine error', Response::HTTP_BAD_REQUEST);
+        }
 
         $this->entityManager->persist($link);
         $this->entityManager->flush();
@@ -102,6 +113,42 @@ class LinkManager
         $link->setUrl($createLinkRequestDto->url);
 
         $this->entityManager->flush();
+    }
+
+    public function moderation(int $id, string $status): void
+    {
+        $link = $this->getLinkFromRepo($id);
+
+        $fn = function($transition) use ($link) {
+            $this->linkStatusStateMachine->apply($link, $transition);
+        };
+
+        try {
+            match ($status) {
+                LinkStatus::DRAFT->value => $fn('to_draft'),
+                LinkStatus::MODERATION->value => $fn('to_moderation'),
+                LinkStatus::PUBLISHED->value => $fn('moderated'),
+            };
+        } catch (\LogicException $e) {
+            throw new \Exception('Status s1tate machine error', Response::HTTP_BAD_REQUEST);
+        }
+
+        $link->setStatus($status);
+
+        $this->entityManager->flush();
+    }
+
+    public function click($identifier): ?int
+    {
+        $link = $this->linkRepository->findOneBy(['url' => $this->buildLink($identifier)]);
+
+        if (!$link instanceof Link) {
+            return null;
+        }
+        $link->addClick();
+        $this->entityManager->flush();
+
+        return $link->getId();
     }
 
     private function getLinkFromRepo(int $id): Link
@@ -139,7 +186,12 @@ class LinkManager
         return $queryBuilder;
     }
 
-    private function getCallBack(): array
+    private function buildLink(string $identifier)
+    {
+        return sprintf('%s%s/%s', $this->linkHost, self::ACTION_FOR_LINK, $identifier);
+    }
+
+    private function getContext(): array
     {
         return [
             AbstractNormalizer::CALLBACKS => [

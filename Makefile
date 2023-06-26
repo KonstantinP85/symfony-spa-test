@@ -1,5 +1,5 @@
 .PHONY: all_targets
-all_targets: build run composer-install #migrate fixtures
+all_targets: build run composer-install migrate fixtures
 
 build:
 	docker-compose build
@@ -12,12 +12,10 @@ composer-install:
 	docker exec php yarn install
 	docker exec php yarn run encore dev
 
-#migrate:
-	#docker exec db-postgres psql -U postgres -c "DROP DATABASE IF EXISTS projectdb"
-	#docker exec php-8.1 rm -rf src/Infrastructure/Migrations/*
-	#docker exec php-8.1 php bin/console doctrine:database:create
-	#docker exec php-8.1 php bin/console make:migration
-	#docker exec php-8.1 php bin/console doctrine:migrations:migrate
+migrate:
+	docker exec php rm -rf migrations/*
+	docker exec php php bin/console make:migration
+	docker exec php php bin/console doctrine:migrations:migrate
 
-#fixtures:
-	#docker exec php-8.1 php bin/console doctrine:fixtures:load --purge-with-truncate --no-interaction
+fixtures:
+	docker exec php php bin/console doctrine:fixtures:load --purge-with-truncate --no-interaction

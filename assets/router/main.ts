@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Main from "../components/Main.vue";
 import LinkList from "../components/LinkList.vue";
+import UserList from "../components/UserList.vue";
 import LinkCreate from "../components/LinkCreate.vue";
 
 const routes: Array<RouteRecordRaw> = [
@@ -18,6 +19,11 @@ const routes: Array<RouteRecordRaw> = [
         path: '/link/create',
         name: 'LinkCreate',
         component: LinkCreate,
+    },
+    {
+        path: '/user/list',
+        name: 'UserList',
+        component: UserList,
     }
 ]
 
