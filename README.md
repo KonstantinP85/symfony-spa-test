@@ -13,7 +13,7 @@
 make
 ```
 
-### Login Form (admin0/12345 or admin0/12345)
+### Login Form (admin0/12345 or user0/12345)
 ```bash
 http://127.0.0.1:8051/
 ```
