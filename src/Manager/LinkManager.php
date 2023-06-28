@@ -8,6 +8,7 @@ use App\Dto\Link\LinkResponseDto;
 use App\Dto\PaginatedData;
 use App\Entity\Link;
 use App\Entity\User;
+use App\Exception\BadParamsException;
 use App\Repository\LinkRepository;
 use App\Service\DtoConverter;
 use App\Service\LinkStatus;
@@ -17,7 +18,6 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Workflow\WorkflowInterface;
-use Symfony\Config\Security\FirewallConfig\AccessToken\TokenHandlerConfig;
 
 class LinkManager
 {
@@ -89,6 +89,12 @@ class LinkManager
             throw new \Exception('Auth error', Response::HTTP_FORBIDDEN);
         }
 
+        $existedLinkWithSameUrl = $this->getLinkByUrl($createLinkRequestDto->url);
+
+        if ($existedLinkWithSameUrl instanceof Link) {
+            throw new BadParamsException(['url' => 'Link with this url has already been created']);
+        }
+
         $link = new Link(
             $user,
             $createLinkRequestDto->name,
@@ -108,6 +114,12 @@ class LinkManager
     public function edit(CreateLinkRequestDto $createLinkRequestDto, $id): void
     {
         $link = $this->getLinkFromRepo($id);
+
+        $existedLinkWithSameUrl = $this->getLinkByUrl($createLinkRequestDto->url);
+
+        if ($existedLinkWithSameUrl instanceof Link && $existedLinkWithSameUrl->getId() !== $id) {
+            throw new BadParamsException(['url' => 'Link with this url has already been created']);
+        }
 
         $link->setName($createLinkRequestDto->name);
         $link->setUrl($createLinkRequestDto->url);
@@ -149,6 +161,13 @@ class LinkManager
         $this->entityManager->flush();
 
         return $link->getId();
+    }
+
+    private function getLinkByUrl(string $url): ?Link
+    {
+        $link = $this->linkRepository->findOneBy(['url' => $url]);
+
+        return $link;
     }
 
     private function getLinkFromRepo(int $id): Link

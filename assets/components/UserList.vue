@@ -101,7 +101,7 @@
             >
               <v-card>
                 <v-card-text>
-                  Редактирование ссылки
+                  Редактирование пользователя
                 </v-card-text>
                 <v-card class="rounded-card pa-5">
                   <v-form
