@@ -128,7 +128,7 @@
               <v-card-text>
                   Вы действительно хотите удалить ссылку?
               </v-card-text>
-              <v-card-actions>
+              <v-card-actions class="d-flex justify-end">
                 <v-btn color="grey" @click="dialog = false">Закрыть</v-btn>
                 <v-btn color="pink" @click="deleteLink">Удалить</v-btn>
               </v-card-actions>
@@ -194,7 +194,7 @@
                   </li>
                 </v-alert>
               </v-card>
-              <v-card-actions>
+              <v-card-actions class="d-flex justify-end">
                 <v-btn color="grey" @click="closeEditForm">Закрыть</v-btn>
                 <v-btn color="green" @click="editLink">Сохранить</v-btn>
               </v-card-actions>

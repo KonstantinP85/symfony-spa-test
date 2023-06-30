@@ -6,6 +6,18 @@
                 <v-spacer></v-spacer>
             </v-card-title>
             <div>
+                <div class="d-flex justify-end">
+                    <div class="user-search-field">
+                        <v-text-field
+                            class="ma-2 pa-2"
+                            v-model="search"
+                            append-icon="mdi-magnify"
+                            label="Search"
+                            single-line
+                            hide-details
+                        ></v-text-field>
+                    </div>
+                </div>
                 <v-data-table-server
                   class="elevation-1"
                   v-model:items-per-page="itemsPerPage"
@@ -88,7 +100,7 @@
                 <v-card-text>
                   Вы действительно хотите удалить пользователя и все его ссылки?
                 </v-card-text>
-                <v-card-actions>
+                <v-card-actions class="d-flex justify-end">
                   <v-btn color="grey" @click="dialog = false">Закрыть</v-btn>
                   <v-btn color="pink" @click="deleteUser">Удалить</v-btn>
                 </v-card-actions>
@@ -128,7 +140,7 @@
                     </li>
                   </v-alert>
                 </v-card>
-                <v-card-actions>
+                <v-card-actions class="d-flex justify-end">
                   <v-btn color="grey" @click="closeEditForm">Закрыть</v-btn>
                   <v-btn color="green" @click="editUser">Сохранить</v-btn>
                 </v-card-actions>
