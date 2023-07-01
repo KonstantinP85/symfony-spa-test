@@ -39,12 +39,14 @@
                         >
                           <span>{{ warning }}</span>
                         </v-alert>
-                        <v-btn
-                            class="mt-5"
-                            type="submit"
-                        >
-                          ВОЙТИ
-                        </v-btn>
+                        <div class="d-flex justify-end">
+                          <v-btn
+                              class="mt-5"
+                              type="submit"
+                          >
+                            ВОЙТИ
+                          </v-btn>
+                        </div>
                       </v-form>
 
                     </v-card>

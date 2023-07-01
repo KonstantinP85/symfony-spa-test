@@ -1,4 +1,4 @@
-FROM node:14.17.1 AS node
+FROM node:16.20.1 AS node
 FROM php:8.2.0-fpm
 
 COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
@@ -8,6 +8,8 @@ RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
 RUN apt-get update && \
         apt-get install -y libpq-dev && \
         apt-get install -y libzip-dev zip &&\
+        apt-get install -y python3 &&\
+        apt-get install -y g++ build-essential &&\
         docker-php-ext-install pdo pdo_pgsql pgsql
 
 
