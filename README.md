@@ -3,8 +3,8 @@
 ### Stack
 #### - PHP 8.2
 #### - Vue 3.3
-#### - Vuetify 4.3.4
-#### - Node 14.17.1
+#### - Vuetify 3.3.4
+#### - Node 16.20.1
 #### - Symfony 6.3
 
 ### Build and Run
@@ -22,3 +22,10 @@ http://127.0.0.1:8051/
 
 ```bash
 docker-compose down
+```
+
+### Deployed to AWS ECS
+
+```bash
+http://3.120.138.188/
+```
