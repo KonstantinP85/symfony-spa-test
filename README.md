@@ -24,8 +24,3 @@ http://127.0.0.1:8051/
 docker-compose down
 ```
 
-### Deployed to AWS ECS
-
-```bash
-http://3.120.138.188/
-```
